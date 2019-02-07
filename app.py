@@ -61,9 +61,11 @@ def Home():
     print("Server received request for 'Home'")
     return (f"Welcome to my Home Page<br/>"
             f"Available Routes:<br/>"
-            f"/api/v1.0/precipitation/<date><br/>"
+            f"/api/v1.0/precipitation/'date'<br/>"
             f"/api/v1.0/stations<br/>"
-            f"/api/v1.0/tobs<br/>")
+            f"/api/v1.0/tobs<br/>"
+            f"/api/v1.0/'start'<br/>"
+            f"/api/v1.0/'start'/'end'<br/>")
 
 @app.route("/api/v1.0/precipitation/<date>")
 
@@ -137,19 +139,19 @@ def Tobs():
     return jsonify(tobsdfTwlv.to_dict(orient='dict'))
 
 
-@app.route("/api/v1.0/<start>")
+@app.route("/api/v1.0/<startDate>")
 
-def statsStart(start):
+def statsStart(startDate):
 
     "Prefered year format YYYY-mm-dd"
 
     # Parse the start parameter
     
-    startDate=dt.datetime.strptime(start, '%Y-%m-%d')
+    strtDt=dt.datetime.strptime(startDate, '%Y-%m-%d')
 
 
     sdQuery=session.query(func.min(Measurement.tobs),func.avg(Measurement.tobs),func.max(Measurement.tobs)).\
-                                                                                    filter(Measurement.date >= startDate).all()
+                                                                                    filter(Measurement.date >= strtDt).all()
     dfsdQuery=pd.DataFrame(sdQuery,columns=('TMin','TAvg','TMax'))
     
 
